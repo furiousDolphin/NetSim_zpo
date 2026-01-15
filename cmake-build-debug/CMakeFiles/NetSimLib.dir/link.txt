@@ -1,0 +1,2 @@
+E:\MSYS2\ucrt64\bin\ar.exe qc libNetSimLib.a CMakeFiles/NetSimLib.dir/src/factory.cpp.obj CMakeFiles/NetSimLib.dir/src/helpers.cpp.obj CMakeFiles/NetSimLib.dir/src/nodes.cpp.obj CMakeFiles/NetSimLib.dir/src/package.cpp.obj CMakeFiles/NetSimLib.dir/src/reports.cpp.obj CMakeFiles/NetSimLib.dir/src/simulation.cpp.obj CMakeFiles/NetSimLib.dir/src/storage_types.cpp.obj
+E:\MSYS2\ucrt64\bin\ranlib.exe libNetSimLib.a

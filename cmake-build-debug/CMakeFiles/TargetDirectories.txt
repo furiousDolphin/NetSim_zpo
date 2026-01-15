@@ -1,0 +1,5 @@
+C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug/CMakeFiles/NetSimLib.dir
+C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug/CMakeFiles/NetSimApp.dir
+C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug/CMakeFiles/test.dir
+C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug/CMakeFiles/rebuild_cache.dir
