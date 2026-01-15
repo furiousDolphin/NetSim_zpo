@@ -11,18 +11,46 @@ namespace NetSim
 
     void ReceiverPreferences::add_receiver(IPackageReceiver *receiver_ptr) 
     {
+        preferences_[receiver_ptr] = 1.0;
+
+        double new_prob = 1.0 / preferences_.size();
+
+        for (auto& [receiver_ptr, prob] : preferences_) 
+        { prob = new_prob; }
     }
 
     void ReceiverPreferences::remove_receiver(IPackageReceiver *receiver_ptr) 
     {
-        
+        preferences_.erase(receiver_ptr);
+
+        if (preferences_.empty()) 
+        { return; }
+
+        double new_prob = 1.0 / preferences_.size();
+
+        for (auto& [receiver_ptr, prob] : preferences_) 
+        { prob = new_prob; }        
     }
 
     //-----------------------------------------------------------------------------------
 
     IPackageReceiver *ReceiverPreferences::choose_receiver() 
     {
-        
+        double p = pg_();
+        double distribution = 0.0;
+
+        for (const auto &[ receiver_ptr, prob ] : preferences_) 
+        {
+            distribution += prob;
+
+            if (p <= distribution) 
+            { return receiver_ptr; }
+        }
+
+        if (!preferences_.empty()) 
+        { return preferences_.rbegin()->first; }
+
+        return nullptr;        
     }
 
     //-----------------------------------------------------------------------------------
@@ -46,7 +74,16 @@ namespace NetSim
 
     void PackageSender::send_package() 
     {
-        
+        if (buffer_) 
+        {
+            IPackageReceiver *receiver_ptr = receiver_preferences_.choose_receiver();
+
+            if (receiver_ptr) 
+            {
+                receiver_ptr->receive_package(std::move(*buffer_));
+                buffer_.reset();
+            }
+        }        
     }
 
     const ReceiverPreferences &PackageSender::get_receiver_preferences() const 
