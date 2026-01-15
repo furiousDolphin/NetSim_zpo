@@ -28,7 +28,23 @@ namespace NetSim
 
     Package PackageQueue::pop() 
     {
-        
+        switch (queue_type_) 
+        {
+            case PackageQueueType::FIFO: 
+            {
+                Package p = std::move(container_.front());
+                container_.pop_front();
+                return p;
+            }
+            case PackageQueueType::LIFO: 
+            {
+                Package p = std::move(container_.back());
+                container_.pop_back();
+                return p;
+            }
+            default: 
+            { throw std::runtime_error("Unknown queue type."); }
+        }
     }
 
     //-----------------------------------------------------------------------------------
