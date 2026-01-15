@@ -1,3 +1,0 @@
-E:\CMAKE\bin\cmake.exe -E rm -f CMakeFiles\NetSimApp.dir/objects.a
-E:\MSYS2\ucrt64\bin\ar.exe qc CMakeFiles\NetSimApp.dir/objects.a @CMakeFiles\NetSimApp.dir\objects1.rsp
-E:\MSYS2\ucrt64\bin\g++.exe -g -Wl,--subsystem,console -Wl,--whole-archive CMakeFiles\NetSimApp.dir/objects.a -Wl,--no-whole-archive -o NetSimApp.exe -Wl,--out-implib,libNetSimApp.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\NetSimApp.dir\linkLibs.rsp
