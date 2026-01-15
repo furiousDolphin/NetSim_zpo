@@ -105,21 +105,83 @@ namespace NetSim
 
     class Ramp : public PackageSender 
     {
-        
+        public:
+            explicit Ramp(ElementID id, TimeOffset di);
+
+            void deliver_goods(Time t);
+
+            ElementID get_id() const;
+
+            TimeOffset get_delivery_interval() const;
+
+        private:
+            ElementID id_;
+            TimeOffset delivery_interval_;        
     };
 
     //-----------------------------------------------------------------------------------
 
     class Worker : public PackageSender, public IPackageReceiver 
     {
-        
+        public:
+            explicit Worker(ElementID id, TimeOffset pd,
+                            std::unique_ptr<IPackageQueue> q);
+
+            void receive_package(Package &&p) override;
+
+            ReceiverType get_receiver_type() const override;
+
+            void do_work(Time t);
+
+            ElementID get_id() const;
+
+            TimeOffset get_processing_duration() const;
+
+            Time get_product_processing_start_time() const;
+
+            IPackageQueue* get_queue() const;
+            std::size_t get_queue_size() const override;
+
+            const std::optional<Package>& get_processing_buffer() const 
+            { return processing_buffer_; }
+
+            const_iterator begin() const override;
+            const_iterator end() const override;
+            const_iterator cbegin() const override;
+            const_iterator cend() const override;
+
+        private:
+            ElementID id_;
+            TimeOffset processing_duration_;
+            Time package_processing_start_time_ = 0;
+            std::unique_ptr<IPackageQueue> q_;
+            std::optional<Package> processing_buffer_;        
     };
 
     //-----------------------------------------------------------------------------------
 
     class Storehouse : public IPackageReceiver 
     {
-        
+        public:
+            explicit Storehouse(ElementID id, std::unique_ptr<IPackageStockpile> d =
+                                              std::make_unique<PackageQueue>(
+                                              PackageQueueType::FIFO));
+
+            void receive_package(Package &&p) override;
+
+            ReceiverType get_receiver_type() const override;
+
+            ElementID get_id() const override;
+            std::size_t get_queue_size() const override;
+
+            const_iterator begin() const override;
+            const_iterator end() const override;
+            const_iterator cbegin() const override;
+            const_iterator cend() const override;
+
+        private:
+            ElementID id_;
+            std::unique_ptr<IPackageStockpile> d_;     
     };
 
 }
