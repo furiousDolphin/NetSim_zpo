@@ -1,0 +1,50 @@
+[
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\factory.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\factory.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/factory.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/factory.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\helpers.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\helpers.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/helpers.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/helpers.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\nodes.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\nodes.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/nodes.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/nodes.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\package.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\package.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/package.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/package.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\reports.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\reports.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/reports.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/reports.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\simulation.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\simulation.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/simulation.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/simulation.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimLib.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimLib.dir\\src\\storage_types.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\src\\storage_types.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/src/storage_types.cpp",
+  "output": "CMakeFiles/NetSimLib.dir/src/storage_types.cpp.obj"
+},
+{
+  "directory": "C:/Users/Tomas/Desktop/NetSim_zpo/cmake-build-debug",
+  "command": "E:\\MSYS2\\ucrt64\\bin\\g++.exe  @CMakeFiles/NetSimApp.dir/includes_CXX.rsp -g -std=gnu++26 -o CMakeFiles\\NetSimApp.dir\\main.cpp.obj -c C:\\Users\\Tomas\\Desktop\\NetSim_zpo\\main.cpp",
+  "file": "C:/Users/Tomas/Desktop/NetSim_zpo/main.cpp",
+  "output": "CMakeFiles/NetSimApp.dir/main.cpp.obj"
+}
+]
