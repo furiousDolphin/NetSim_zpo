@@ -88,7 +88,105 @@ namespace NetSim
 
     class Factory 
     {
-        
+        public:
+            //-----------------------------------------------------------------------------------
+
+            void add_ramp(Ramp &&r) 
+            { ramps_.add(std::move(r)); }
+
+            void remove_ramp(ElementID id) 
+            { ramps_.remove_by_id(id); }
+
+
+            NodeCollection<Ramp>::iterator find_ramp_by_id(ElementID id) 
+            { return ramps_.find_by_id(id); }
+
+            NodeCollection<Ramp>::const_iterator find_ramp_by_id(ElementID id) const 
+            { return ramps_.find_by_id(id); }
+
+            NodeCollection<Ramp>::const_iterator ramp_cbegin() const 
+            { return ramps_.cbegin(); }
+
+            NodeCollection<Ramp>::const_iterator ramp_cend() const 
+            { return ramps_.cend(); }
+
+            //-----------------------------------------------------------------------------------
+
+            void add_worker(Worker &&w) 
+            { workers_.add(std::move(w)); }
+
+            void remove_worker(ElementID id);
+
+
+            NodeCollection<Worker>::iterator find_worker_by_id(ElementID id) 
+            { return workers_.find_by_id(id); }
+
+            NodeCollection<Worker>::const_iterator
+            find_worker_by_id(ElementID id) const 
+            { return workers_.find_by_id(id); }
+
+            NodeCollection<Worker>::const_iterator worker_cbegin() const 
+            { return workers_.cbegin(); }
+
+            NodeCollection<Worker>::const_iterator worker_cend() const 
+            { return workers_.cend(); }
+
+
+            //-----------------------------------------------------------------------------------
+
+            void add_storehouse(Storehouse &&s) 
+            { storehouses_.add(std::move(s)); }
+
+            void remove_storehouse(ElementID id); 
+
+            NodeCollection<Storehouse>::iterator find_storehouse_by_id(ElementID id) 
+            { return storehouses_.find_by_id(id); }
+
+            NodeCollection<Storehouse>::const_iterator find_storehouse_by_id(ElementID id) const 
+            { return storehouses_.find_by_id(id); }
+
+            NodeCollection<Storehouse>::const_iterator storehouse_cbegin() const 
+            { return storehouses_.cbegin(); }
+
+            NodeCollection<Storehouse>::const_iterator storehouse_cend() const 
+            { return storehouses_.cend(); }
+
+            //-----------------------------------------------------------------------------------
+
+            bool is_consistent();
+            void do_deliveries(Time t);
+            void do_package_passing();
+            void do_work(Time t);
+
+            //-----------------------------------------------------------------------------------
+
+        private:
+
+            template <typename Node>
+            void remove_receiver(NodeCollection<Node> &collection, ElementID id) 
+            {
+                auto it = collection.find_by_id(id);
+
+                if (it != collection.end()) 
+                {
+                    IPackageReceiver* receiver_ptr = dynamic_cast<IPackageReceiver*>( &(*it) );
+
+                    if (receiver_ptr) 
+                    {
+                        for (auto& ramp : ramps_) 
+                        { ramp.get_receiver_preferences().remove_receiver(receiver_ptr); }
+
+                        for (auto& worker : workers_) 
+                        { worker.get_receiver_preferences().remove_receiver(receiver_ptr); }
+                    }
+
+                    collection.remove_by_id(id);
+                }
+            }
+
+            NodeCollection<Ramp> ramps_;
+            NodeCollection<Worker> workers_;
+            NodeCollection<Storehouse> storehouses_;        
     };
 
     Factory load_factory_structure(std::istream &is);

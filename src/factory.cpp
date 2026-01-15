@@ -18,7 +18,44 @@ namespace NetSim
 
     bool has_reachable_storehouse(const PackageSender *sender, std::map<const PackageSender *, NodeColor> &node_colors) 
     {
-        
+        if (node_colors.at(sender) == NodeColor::VERIFIED) 
+        { return true; }
+
+        node_colors.at(sender) = NodeColor::VISITED;
+
+        if (sender->get_receiver_preferences().get_preferences().empty()) 
+        { throw std::logic_error("No receivers"); }
+
+        bool has_other_receiver = false;
+
+        for (auto &receiver_pair : sender->get_receiver_preferences().get_preferences()) 
+        {
+            IPackageReceiver *receiver = receiver_pair.first;
+
+            if (receiver->get_receiver_type() == ReceiverType::STOREHOUSE) 
+            {
+                has_other_receiver = true;
+            } 
+            else 
+            {
+                Worker *worker = dynamic_cast<Worker *>(receiver);
+
+                if (worker == sender) 
+                { continue; }
+
+                has_other_receiver = true;
+
+                if (node_colors.find(worker) == node_colors.end() || node_colors.at(worker) == NodeColor::UNVISITED) 
+                { has_reachable_storehouse(worker, node_colors); }
+            }
+        }
+
+        node_colors.at(sender) = NodeColor::VERIFIED;
+
+        if (!has_other_receiver) 
+        { throw std::logic_error("No other receiver"); }
+
+        return true;        
     }
 
     //-----------------------------------------------------------------------------------
