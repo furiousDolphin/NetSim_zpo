@@ -247,14 +247,37 @@ namespace NetSim
 
     void save_links(const PackageSender &sender, const std::string &src_tag, ElementID src_id, std::ostream &os) 
     {
-        
+        for (const auto &pref : sender.get_receiver_preferences().get_preferences()) 
+        {
+            os << "LINK src=" << src_tag << "-" << src_id << " dest=";
+            os << (pref.first->get_receiver_type() == ReceiverType::WORKER ? "worker-" : "store-");
+            os << pref.first->get_id() << "\n";
+        }        
     }
 
     //-----------------------------------------------------------------------------------
 
     void save_factory_structure(const Factory &factory, std::ostream &os) 
     {
-        
+        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
+        { os << "LOADING_RAMP id=" << it->get_id() << " delivery-interval=" << it->get_delivery_interval() << "\n"; }
+
+        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); ++it) 
+        {
+            os << "WORKER id=" << it->get_id() << " processing-time=" << it->get_processing_duration() << " queue-type=";
+            os << (it->get_queue()->get_queue_type() == PackageQueueType::LIFO ? "LIFO" : "FIFO") << "\n";
+        }
+
+        for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); ++it) 
+        { os << "STOREHOUSE id=" << it->get_id() << "\n"; }
+
+        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
+        { save_links(*it, "ramp", it->get_id(), os); }
+
+        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); ++it) 
+        { save_links(*it, "worker", it->get_id(), os); }
+
+        os.flush();        
     }
 
 }
