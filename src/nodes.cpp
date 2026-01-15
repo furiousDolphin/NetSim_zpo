@@ -104,7 +104,11 @@ namespace NetSim
 
     void Ramp::deliver_goods(Time t) 
     {
-        
+        if ((t - 1) % delivery_interval_ == 0) 
+        {
+            Package p;
+            this->push_package(std::move(p));
+        }    
     }
 
     ElementID Ramp::get_id() const 
@@ -126,7 +130,20 @@ namespace NetSim
 
     void Worker::do_work(Time t) 
     {
+        if (!processing_buffer_ && !q_->empty()) 
+        {
+            processing_buffer_.emplace(q_->pop());
+            package_processing_start_time_ = t;
+        }
 
+        if (processing_buffer_) 
+        {
+            if (t - package_processing_start_time_ >= processing_duration_ - 1) 
+            {
+                this->push_package(std::move(*processing_buffer_));
+                processing_buffer_.reset();
+            }
+        }
     }
 
     //-----------------------------------------------------------------------------------
