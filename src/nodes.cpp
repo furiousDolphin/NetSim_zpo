@@ -9,6 +9,34 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
+    // void ReceiverPreferences::set_random_probabilities()
+    // {
+    //     std::list<double> probs;
+    //     size_type n = preferences_.size();
+    //     double prob_sum = 0.0;
+
+    //     std::generate_n(
+    //         std::back_inserter(probs), n, 
+    //         [&prob_sum, this]()
+    //         { 
+    //             auto prob = probability_generator(); 
+    //             prob_sum+=prob; 
+    //             return prob; 
+    //         }     
+    //     );
+
+    //     for ( auto& [ preference_ptr, preference_prob ] : preferences_ )
+    //     {
+    //         auto prob = probs.front();
+    //         probs.pop_front();
+
+    //         preference_prob = prob / prob_sum;
+    //     }       
+    // }
+
+
+    //po dodaniu receivery ustwaiamy rowne prawdopodobienstawa na wszystkich receiverow
+    //z kodem powyrzej byloby ciekawiej, ale TESTY takk oczywiscie testy nie przechodza
     void ReceiverPreferences::add_receiver(IPackageReceiver *receiver_ptr) 
     {
         preferences_[receiver_ptr] = 1.0;
@@ -19,6 +47,7 @@ namespace NetSim
         { prob = new_prob; }
     }
 
+    //to samo co wczesniej
     void ReceiverPreferences::remove_receiver(IPackageReceiver *receiver_ptr) 
     {
         preferences_.erase(receiver_ptr);
@@ -34,6 +63,7 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
+    //tu robimy uproszczone wyszkukiwanie liniowe ( czyli dodajemy nasze probs tak dlugo jak wylosowany prob nie jest mniejszy )
     IPackageReceiver *ReceiverPreferences::choose_receiver() 
     {
         double p = pg_();
@@ -58,6 +88,7 @@ namespace NetSim
     const ReceiverPreferences::preferences_t & ReceiverPreferences::get_preferences() const 
     { return preferences_; }
 
+    //iteratory
     ReceiverPreferences::const_iterator ReceiverPreferences::begin() const 
     { return preferences_.begin(); }
 
@@ -81,7 +112,7 @@ namespace NetSim
             if (receiver_ptr) 
             {
                 receiver_ptr->receive_package(std::move(*buffer_));
-                buffer_.reset();
+                buffer_.reset(); //zeby .has_value() zwrocilo false zgodnie z prawda, jezeli chodzi o czyszczenie to i tak konstruktor przenoszacy wyczysci
             }
         }        
     }
@@ -132,12 +163,14 @@ namespace NetSim
     {
         if (!processing_buffer_ && !q_->empty()) 
         {
+            //jesli pracownik nad niczym nei pracuje to sciagamy z zgodnie z typem kolejki odpowiednia z niej wartosc i aktualizujemy start time
             processing_buffer_.emplace(q_->pop());
             package_processing_start_time_ = t;
         }
 
         if (processing_buffer_) 
         {
+            //jesli workem ma nad czy mpracowac to musimy sprawdzic czy jego praca trwa juz okreslona liczbe tur przetwrzania package'ea
             if (t - package_processing_start_time_ >= processing_duration_ - 1) 
             {
                 this->push_package(std::move(*processing_buffer_));
@@ -148,6 +181,8 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
+
+    //gettery
     ReceiverType Worker::get_receiver_type() const 
     { return ReceiverType::WORKER; }
 
@@ -166,6 +201,8 @@ namespace NetSim
     IPackageQueue* Worker::get_queue() const 
     { return q_.get(); }
 
+
+    //iteratory
     Worker::const_iterator Worker::begin() const 
     { return q_->begin(); }
 
@@ -185,6 +222,7 @@ namespace NetSim
         d_(std::move(d)) 
     {}
 
+    //gettery
     ReceiverType Storehouse::get_receiver_type() const 
     { return ReceiverType::STOREHOUSE; }
 
@@ -197,6 +235,8 @@ namespace NetSim
     std::size_t Storehouse::get_queue_size() const 
     { return d_->size(); }
 
+
+    //iteratory
     Storehouse::const_iterator Storehouse::begin() const 
     { return d_->begin(); }
 

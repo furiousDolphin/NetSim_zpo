@@ -121,8 +121,7 @@ namespace NetSim
             NodeCollection<Worker>::iterator find_worker_by_id(ElementID id) 
             { return workers_.find_by_id(id); }
 
-            NodeCollection<Worker>::const_iterator
-            find_worker_by_id(ElementID id) const 
+            NodeCollection<Worker>::const_iterator find_worker_by_id(ElementID id) const 
             { return workers_.find_by_id(id); }
 
             NodeCollection<Worker>::const_iterator worker_cbegin() const 

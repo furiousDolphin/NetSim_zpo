@@ -13,6 +13,7 @@
 namespace NetSim 
 {
 
+    //kocham enumy hihi
     enum class ReceiverType 
     { 
         WORKER, 
@@ -23,25 +24,26 @@ namespace NetSim
 
     class IPackageReceiver;
 
-    //-----------------------------------------------------------------------------------
+    //--------------RECEIVER_PREFERENCES - WRAPPER na std::map<IPackageReceiver *, double> z dodatkowymi funckjami----------------
 
     class ReceiverPreferences 
     {
         public:
+            //definicja aliasow
             using preferences_t = std::map<IPackageReceiver *, double>;
             using const_iterator = preferences_t::const_iterator;
 
+            //korzystam z explicita bo to ogolnie dobra praktyka
             explicit ReceiverPreferences(ProbabilityGenerator pg = probability_generator);
 
             void add_receiver(IPackageReceiver *receiver_ptr);
-
             void remove_receiver(IPackageReceiver *receiver_ptr);
 
             IPackageReceiver *choose_receiver();
 
             const preferences_t & get_preferences() const;
 
-
+            //iteratory nic specjalnego ale podpisac mozna
             const_iterator begin() const;
             const_iterator end() const;
             const_iterator cbegin() const;
@@ -52,23 +54,22 @@ namespace NetSim
             ProbabilityGenerator pg_;        
     };
 
-    //-----------------------------------------------------------------------------------
+    //-------Klasa macierzysta do WORKER i RAMP ( worker dziedziczy dwokrotnie )-------------------------------
 
     class PackageSender 
     {
         public:
             PackageSender() = default;
-
             PackageSender(PackageSender &&) = default;
 
             void send_package();
 
+            //gettery
             const ReceiverPreferences &get_receiver_preferences() const;
+            ReceiverPreferences &get_receiver_preferences();
 
             const std::optional<Package>& get_sending_buffer() const 
             { return buffer_; }
-
-            ReceiverPreferences &get_receiver_preferences();
 
             ReceiverPreferences receiver_preferences_;
 
@@ -78,8 +79,10 @@ namespace NetSim
             std::optional<Package> buffer_;        
     };
 
-    //-----------------------------------------------------------------------------------
+    //----------------------IPackageReceiver - Interface do RECEIVEROW ( worker, storehouse )------------------------
 
+
+    //klasa interface dla workera i storehousea ( wskazniki do tej klasy trzymamy w instancjach ReceiverPreferences )
     class IPackageReceiver 
     {
         public:
@@ -90,18 +93,20 @@ namespace NetSim
             virtual ElementID get_id() const = 0;
             virtual std::size_t get_queue_size() const = 0;
 
+
+            //generyczne iteratory nic takiego
             virtual const_iterator begin() const = 0;
             virtual const_iterator end() const = 0;
-
             virtual const_iterator cbegin() const = 0;
             virtual const_iterator cend() const = 0;
 
             virtual ~IPackageReceiver() = default;
 
+            //analogicznie do komantarza z nad klasy, tu zwracamy ReceiverType::WORKER/STOREHOUSE
             virtual ReceiverType get_receiver_type() const = 0;        
     };
 
-    //-----------------------------------------------------------------------------------
+    //--------------RAMPA--------------------------------------------------------------
 
     class Ramp : public PackageSender 
     {
@@ -110,8 +115,8 @@ namespace NetSim
 
             void deliver_goods(Time t);
 
+            //gettery do zasobow
             ElementID get_id() const;
-
             TimeOffset get_delivery_interval() const;
 
         private:
@@ -119,7 +124,7 @@ namespace NetSim
             TimeOffset delivery_interval_;        
     };
 
-    //-----------------------------------------------------------------------------------
+    //-----------WORKER---------------------------------------------------------------
 
     class Worker : public PackageSender, public IPackageReceiver 
     {
@@ -128,23 +133,20 @@ namespace NetSim
                             std::unique_ptr<IPackageQueue> q);
 
             void receive_package(Package &&p) override;
-
-            ReceiverType get_receiver_type() const override;
-
             void do_work(Time t);
 
+            //gettery
             ElementID get_id() const;
-
             TimeOffset get_processing_duration() const;
-
             Time get_product_processing_start_time() const;
-
             IPackageQueue* get_queue() const;
             std::size_t get_queue_size() const override;
+            ReceiverType get_receiver_type() const override;
 
             const std::optional<Package>& get_processing_buffer() const 
             { return processing_buffer_; }
 
+            //iteratory
             const_iterator begin() const override;
             const_iterator end() const override;
             const_iterator cbegin() const override;
@@ -158,7 +160,7 @@ namespace NetSim
             std::optional<Package> processing_buffer_;        
     };
 
-    //-----------------------------------------------------------------------------------
+    //-----------------------------STOREHOUSE---------------------------------------
 
     class Storehouse : public IPackageReceiver 
     {
@@ -169,11 +171,12 @@ namespace NetSim
 
             void receive_package(Package &&p) override;
 
+            //gettery
             ReceiverType get_receiver_type() const override;
-
             ElementID get_id() const override;
             std::size_t get_queue_size() const override;
 
+            //iteratory
             const_iterator begin() const override;
             const_iterator end() const override;
             const_iterator cbegin() const override;

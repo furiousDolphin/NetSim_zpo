@@ -11,10 +11,11 @@ namespace NetSim
 
         std::vector<ElementID> ramp_ids;
 
+        //rownie dobrze mogles zrobic range for jak dla mnie ale ok
         for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
         { ramp_ids.push_back(it->get_id()); }
 
-        std::sort(ramp_ids.begin(), ramp_ids.end());
+        std::sort(ramp_ids.begin(), ramp_ids.end());   //sortujemy wedlug id
 
         for (auto id : ramp_ids) 
         {
@@ -26,7 +27,8 @@ namespace NetSim
             
             std::vector<std::pair<std::string, ElementID>> receivers;
 
-            for (auto const& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences()) 
+            //nastepnym razem robimy iteratory kalsie ReceiverPreferences i tyle bo to wygladda strasznei
+            for (const auto& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences()) 
             {
                 std::string type_str = (receiver_ptr->get_receiver_type() == ReceiverType::WORKER ? "worker" : "storehouse");
 
@@ -35,13 +37,14 @@ namespace NetSim
 
             std::sort(receivers.begin(), receivers.end(), [](const auto& a, const auto& b) 
             {
+                // sortujemy najpierw alfabetycznie ( czyli czy worker czy storehouse ) a potem po id
                 if (a.first != b.first) 
                 { return a.first < b.first; }
 
                 return a.second < b.second;
             });
             
-            for (auto const& [receiver_str, receiver_id] : receivers) 
+            for (const auto & [receiver_str, receiver_id] : receivers) 
             { os << "    " << receiver_str << " #" << receiver_id << "\n"; }
         }
 
@@ -67,7 +70,7 @@ namespace NetSim
             
             std::vector<std::pair<std::string, ElementID>> receivers;
 
-            for (auto const& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences()) 
+            for (const auto& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences()) 
             {
                 std::string type_str = (receiver_ptr->get_receiver_type() == ReceiverType::WORKER ? "worker" : "storehouse");
 
@@ -76,13 +79,14 @@ namespace NetSim
 
             std::sort(receivers.begin(), receivers.end(), [](const auto& a, const auto& b) 
             {
+                // sortujemy najpierw alfabetycznie ( czyli czy worker czy storehouse bo worker moze wysylac tez do workera ) a potem po id
                 if (a.first != b.first) 
                 { return a.first < b.first; }
                 
                 return a.second < b.second;
             });
             
-            for (auto const& [receiver_str, receiver_id] : receivers) 
+            for (const auto& [receiver_str, receiver_id] : receivers) 
             { os << "    " << receiver_str << " #" << receiver_id << "\n"; }
         }
 
@@ -125,8 +129,9 @@ namespace NetSim
 
             os << "  PBuffer: ";
 
-            if (it->get_processing_buffer().has_value()) 
+            if (it->get_processing_buffer().has_value())   //po to bylo robienie tego restet przy std:;optional w workerze ( zeby teraz to dzialalo )
             {
+                //tutaj ( bo to moze dziwnie wygladac )  mamy bufer->metoda()  to robimy val = bufer.value() i potem val.metoda(), ale tak jest w jednej linijce wiec zostawiem
                 os << "#" << it->get_processing_buffer()->get_id() << " (pt = " 
                    << (t - it->get_product_processing_start_time() + 1) << ")\n";
             } 
@@ -134,6 +139,8 @@ namespace NetSim
             {
                 os << "(empty)\n";
             }
+
+            //------------------------
 
             os << "  Queue: ";
 
@@ -147,8 +154,11 @@ namespace NetSim
                 os << "\n";
             }
 
+            //------------------------
+
             os << "  SBuffer: ";
 
+            // to samo co wczesneij ( patrz na PBuffer )
             if (it->get_sending_buffer().has_value()) 
             { os << "#" << it->get_sending_buffer()->get_id() << "\n"; } 
 
@@ -165,7 +175,7 @@ namespace NetSim
         for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); ++it) 
         { storehouse_ids.push_back(it->get_id()); }
 
-        std::sort(storehouse_ids.begin(), storehouse_ids.end());
+        std::sort(storehouse_ids.begin(), storehouse_ids.end()); //sortujemy po id
 
         for (auto id : storehouse_ids) 
         {
