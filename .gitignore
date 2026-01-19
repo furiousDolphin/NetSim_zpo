@@ -1,0 +1,9 @@
+build/
+cmake-build-debug/
+bin/
+*.exe
+*.o
+*.obj
+
+.vscode/
+.idea/
