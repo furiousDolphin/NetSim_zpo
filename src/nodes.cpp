@@ -64,7 +64,7 @@ namespace NetSim
     //-----------------------------------------------------------------------------------
 
     //tu robimy uproszczone wyszkukiwanie liniowe ( czyli dodajemy nasze probs tak dlugo jak wylosowany prob nie jest mniejszy )
-    IPackageReceiver *ReceiverPreferences::choose_receiver() 
+    IPackageReceiver* ReceiverPreferences::choose_receiver() 
     {
         double p = pg_();
         double distribution = 0.0;
@@ -95,23 +95,24 @@ namespace NetSim
     ReceiverPreferences::const_iterator ReceiverPreferences::end() const 
     { return preferences_.end(); }
 
-    ReceiverPreferences::const_iterator ReceiverPreferences::cbegin() const 
+    ReceiverPreferences::const_iterator ReceiverPreferences::cbegin()  const 
     { return preferences_.cbegin(); }
 
     ReceiverPreferences::const_iterator ReceiverPreferences::cend() const 
     { return preferences_.cend(); }
 
+
     //-----------------------------------------------------------------------------------
 
     void PackageSender::send_package() 
     {
-        if (buffer_) 
+        if ( buffer_ ) 
         {
-            IPackageReceiver *receiver_ptr = receiver_preferences_.choose_receiver();
+            IPackageReceiver* receiver_ptr = receiver_preferences_.choose_receiver();
 
-            if (receiver_ptr) 
+            if (receiver_ptr != nullptr) 
             {
-                receiver_ptr->receive_package(std::move(*buffer_));
+                receiver_ptr->receive_package(std::move( *buffer_ ));
                 buffer_.reset(); //zeby .has_value() zwrocilo false zgodnie z prawda, jezeli chodzi o czyszczenie to i tak konstruktor przenoszacy wyczysci
             }
         }        
@@ -121,10 +122,10 @@ namespace NetSim
     { return receiver_preferences_; }
 
     ReceiverPreferences &PackageSender::get_receiver_preferences() 
-    { return receiver_preferences_; }
+    { return receiver_preferences_;  }
 
-    void PackageSender::push_package(Package &&package) 
-    { buffer_.emplace(std::move(package)); }
+    void PackageSender::push_package(Package&& package) 
+    { buffer_.emplace( std::move(package) ); }
 
     //-----------------------------------------------------------------------------------
 
@@ -138,7 +139,7 @@ namespace NetSim
         if ((t - 1) % delivery_interval_ == 0) 
         {
             Package p;
-            this->push_package(std::move(p));
+            this->push_package( std::move(p) );
         }    
     }
 
@@ -153,27 +154,30 @@ namespace NetSim
     Worker::Worker(ElementID id, TimeOffset pd, std::unique_ptr<IPackageQueue> q) : 
         id_(id), 
         processing_duration_(pd), 
-        q_(std::move(q)) 
+        q_( std::move(q) ) 
     {}
 
     void Worker::receive_package(Package &&p) 
-    { q_->push(std::move(p)); }
+    { q_->push( std::move(p) ); }
+
 
     void Worker::do_work(Time t) 
     {
-        if (!processing_buffer_ && !q_->empty()) 
+        if ( !processing_buffer_ && !q_->empty() ) 
         {
             //jesli pracownik nad niczym nei pracuje to sciagamy z zgodnie z typem kolejki odpowiednia z niej wartosc i aktualizujemy start time
-            processing_buffer_.emplace(q_->pop());
+            processing_buffer_.emplace( q_->pop() );
+
             package_processing_start_time_ = t;
         }
 
         if (processing_buffer_) 
         {
+
             //jesli workem ma nad czy mpracowac to musimy sprawdzic czy jego praca trwa juz okreslona liczbe tur przetwrzania package'ea
             if (t - package_processing_start_time_ >= processing_duration_ - 1) 
             {
-                this->push_package(std::move(*processing_buffer_));
+                this->push_package(std::move( *processing_buffer_) );
                 processing_buffer_.reset();
             }
         }
@@ -188,6 +192,7 @@ namespace NetSim
 
     ElementID Worker::get_id() const 
     { return id_; }
+
 
     std::size_t Worker::get_queue_size() const 
     { return q_->size(); }
@@ -205,6 +210,7 @@ namespace NetSim
     //iteratory
     Worker::const_iterator Worker::begin() const 
     { return q_->begin(); }
+
 
     Worker::const_iterator Worker::end() const 
     { return q_->end(); }
@@ -229,7 +235,7 @@ namespace NetSim
     void Storehouse::receive_package(Package &&p) 
     { d_->push(std::move(p)); }
 
-    ElementID Storehouse::get_id() const 
+    ElementID Storehouse::get_id()  const 
     { return id_; }
 
     std::size_t Storehouse::get_queue_size() const 
@@ -240,11 +246,12 @@ namespace NetSim
     Storehouse::const_iterator Storehouse::begin() const 
     { return d_->begin(); }
 
-    Storehouse::const_iterator Storehouse::end() const 
+    Storehouse::const_iterator Storehouse::end()  const 
     { return d_->end(); }
 
-    Storehouse::const_iterator Storehouse::cbegin() const 
+    Storehouse::const_iterator Storehouse::cbegin()  const 
     { return d_->cbegin(); }
+
 
     Storehouse::const_iterator Storehouse::cend() const 
     { return d_->cend(); }

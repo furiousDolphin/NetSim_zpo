@@ -30,18 +30,18 @@ namespace NetSim
     {
         public:
             //definicja aliasow
-            using preferences_t = std::map<IPackageReceiver *, double>;
+            using preferences_t = std::map<IPackageReceiver*, double>;
             using const_iterator = preferences_t::const_iterator;
 
             //korzystam z explicita bo to ogolnie dobra praktyka
             explicit ReceiverPreferences(ProbabilityGenerator pg = probability_generator);
 
-            void add_receiver(IPackageReceiver *receiver_ptr);
-            void remove_receiver(IPackageReceiver *receiver_ptr);
+            void add_receiver(IPackageReceiver* receiver_ptr);
+            void remove_receiver(IPackageReceiver* receiver_ptr);
 
-            IPackageReceiver *choose_receiver();
+            IPackageReceiver* choose_receiver();
 
-            const preferences_t & get_preferences() const;
+            const preferences_t& get_preferences() const;
 
             //iteratory nic specjalnego ale podpisac mozna
             const_iterator begin() const;
@@ -65,8 +65,8 @@ namespace NetSim
             void send_package();
 
             //gettery
-            const ReceiverPreferences &get_receiver_preferences() const;
-            ReceiverPreferences &get_receiver_preferences();
+            const ReceiverPreferences& get_receiver_preferences() const;
+            ReceiverPreferences& get_receiver_preferences();
 
             const std::optional<Package>& get_sending_buffer() const 
             { return buffer_; }
@@ -74,7 +74,7 @@ namespace NetSim
             ReceiverPreferences receiver_preferences_;
 
         protected:
-            void push_package(Package &&package);
+            void push_package(Package&& package);
 
             std::optional<Package> buffer_;        
     };
@@ -88,7 +88,7 @@ namespace NetSim
         public:
             using const_iterator = IPackageStockpile::const_iterator;
 
-            virtual void receive_package(Package &&p) = 0;
+            virtual void receive_package(Package&& p) = 0;
 
             virtual ElementID get_id() const = 0;
             virtual std::size_t get_queue_size() const = 0;

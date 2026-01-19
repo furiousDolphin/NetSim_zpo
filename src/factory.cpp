@@ -17,7 +17,7 @@ namespace NetSim
     //-----------------------------------------------------------------------------------
 
     //wole to napisac poza klasa jakby mocki mialy sie buntowac
-    bool has_reachable_storehouse(const PackageSender *sender, std::map<const PackageSender *, NodeColor> &node_colors) 
+    bool has_reachable_storehouse(const PackageSender* sender, std::map<const PackageSender*, NodeColor>& node_colors) 
     {
         //jesli wywolalismy to dla sendera ktory byl juz sprawdzany to skipujemy to wywolanie
         if (node_colors.at(sender) == NodeColor::VERIFIED) 
@@ -31,7 +31,7 @@ namespace NetSim
 
         bool has_other_receiver = false;
 
-        for (auto & [receiver_ptr, prob] : sender->get_receiver_preferences().get_preferences())
+        for ( auto& [receiver_ptr, prob] : sender->get_receiver_preferences().get_preferences())
         {
             //IPackageReceiver *receiver_ptr = receiver_ptr; // uzywanie pari jak dal mnie jest nieczytelne sorki musialem pozmieniac
 
@@ -40,7 +40,7 @@ namespace NetSim
 
             else 
             {
-                Worker *worker_ptr = dynamic_cast<Worker *>(receiver_ptr); // tutaj przez to ze trzymam rzeczy jako IPackageReceiver* to musze to zrzutowac na Worker*
+                Worker* worker_ptr = dynamic_cast<Worker* >(receiver_ptr); // tutaj przez to ze trzymam rzeczy jako IPackageReceiver* to musze to zrzutowac na Worker*
 
                 if (worker_ptr == sender)  // zmeinilbym na sender ptr ale boje sie tych testow ze znow im cos nie bedzie pasowac jak zawsze
                 { continue; } //ogolnie jesi wskazniki sendera i workera w ktorego pobralem sa takie same to znaczy ze wysylam sam do siebie i nic wiecej sie nie dowiem
@@ -58,7 +58,7 @@ namespace NetSim
         node_colors.at(sender) = NodeColor::VERIFIED;
 
         //to musze wywolac po przypisaniu stanu odwiedzenia
-        if (!has_other_receiver) 
+        if ( !has_other_receiver) 
         { throw std::logic_error("No other receiver"); }
 
         return true;        
@@ -76,22 +76,22 @@ namespace NetSim
 
     void Factory::do_deliveries(Time t) 
     {
-        for (auto &ramp : ramps_) 
+        for ( auto& ramp : ramps_) 
         { ramp.deliver_goods(t); }        
     }
 
     void Factory::do_package_passing() 
     {
-        for (auto &ramp : ramps_) 
+        for ( auto& ramp : ramps_) 
         { ramp.send_package(); }
 
-        for (auto &worker : workers_) 
+        for ( auto& worker : workers_) 
         { worker.send_package(); }        
     }
 
     void Factory::do_work(Time t) 
     {
-        for (auto &worker : workers_) 
+        for ( auto& worker : workers_) 
         { worker.do_work(t); }        
     }
 
@@ -113,17 +113,16 @@ namespace NetSim
         try 
         {
             //dla kazdej rampy musze stprawdzic czy paczka z niej wyslana dojdzie do storehouse obojetnie jakiego
-            for (const auto &ramp : ramps_) 
+            for (const auto& ramp : ramps_) 
             {
                 //sluzy d o tego funkcja widoczna poniezej ktorej ciala nalezy szukac powyzej
-                if (!has_reachable_storehouse(&ramp, node_colors)) 
+                if (!has_reachable_storehouse( &ramp, node_colors)) 
                 { return false; }
             }
         } 
-        catch (const std::logic_error &e) 
-        {
-            return false;
-        }
+
+        catch (const std::logic_error& e) 
+        { return false; }
 
         return true;        
     }
@@ -134,6 +133,7 @@ namespace NetSim
     {
         std::vector<std::string> tokens;
         std::string token;
+
         std::istringstream token_stream(line);
 
         while (std::getline(token_stream, token, ' ')) 
@@ -165,7 +165,7 @@ namespace NetSim
 
 
         //pierwszy indeks wzielismy jako tag powyzej wiec robimy od 1
-        for (size_t i = 1; i < tokens.size(); ++i) 
+        for (size_t i = 1; i < tokens.size(); i++ ) 
         {
             size_t sep = tokens[i].find('=');
 
@@ -190,21 +190,21 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
-    Factory load_factory_structure(std::istream &is) 
+    Factory load_factory_structure(std::istream& is) 
     {
         Factory factory;
         std::string line;
 
         while (std::getline(is, line)) 
         {
-            if (line.empty() || line[0] == ';') //tu nie musze chyba nic tlumaczyc
+            if ( line.empty() || line[0] == ';') //tu nie musze chyba nic tlumaczyc
             { continue; }
 
             ParsedLineData data = parse_line(line);
 
             if (data.element_type == ElementType::LOADING_RAMP) 
             {
-                ElementID id = std::stoi(data.parameters["id"]);
+                ElementID  id = std::stoi( data.parameters["id"] );
                 TimeOffset di = std::stoi(data.parameters["delivery-interval"]);
 
                 factory.add_ramp(Ramp(id, di));
@@ -228,6 +228,8 @@ namespace NetSim
                 factory.add_storehouse(Storehouse(id));
             } 
 
+            // kolejnosc LINK w pliku jest kluczowa, bo to zadziala tylko jesli LINK bedzie na koncu 
+            //( musze mec zalaw=dowane wszystkie PackageReceivery i PackageSendery zanim wywolam tego if'a )
             else if (data.element_type == ElementType::LINK) 
             {
                 std::string src_str = data.parameters["src"];
@@ -243,7 +245,7 @@ namespace NetSim
 
                 //------------na podstawie src_type-dest_type pozyskanego z pliku, musze sprawdzic czy wczesniej stworzylem danego src i dest---------------
                 //------------i jesli stworzylem ( bo LINK bedzie na koncu ) to musze pobrac wskaznik do receiver'a i dodac go do sender'a ( src )----------
-                IPackageReceiver *receiver;
+                IPackageReceiver* receiver_ptr;
 
 
                 if (dest_type == "worker") 
@@ -252,7 +254,7 @@ namespace NetSim
                     if (it == factory.worker_cend()) 
                     { throw std::logic_error("Receiver not found"); }
 
-                    receiver = &(*it);
+                    receiver_ptr = &(*it);
                 } 
 
                 else if (dest_type == "storehouse" || dest_type == "store") 
@@ -261,7 +263,7 @@ namespace NetSim
                     if (it == factory.storehouse_cend()) 
                     { throw std::logic_error("Receiver not found"); }
 
-                    receiver = &(*it);
+                    receiver_ptr = &(*it);
                 } 
 
                 else 
@@ -275,7 +277,7 @@ namespace NetSim
                     if (it == factory.ramp_cend()) 
                     { throw std::logic_error("Sender not found"); }
 
-                    it->get_receiver_preferences().add_receiver(receiver);
+                    it->get_receiver_preferences().add_receiver(receiver_ptr);
                 } 
 
                 else if (src_type == "worker") 
@@ -284,7 +286,7 @@ namespace NetSim
                     if (it == factory.worker_cend()) 
                     { throw std::logic_error("Sender not found"); }
 
-                    it->get_receiver_preferences().add_receiver(receiver);
+                    it->get_receiver_preferences().add_receiver(receiver_ptr);
                 } 
 
                 else 
@@ -298,9 +300,9 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
-    void save_links(const PackageSender &sender, const std::string &src_tag, ElementID src_id, std::ostream &os) 
+    void save_links(const PackageSender& sender, const std::string& src_tag, ElementID src_id, std::ostream& os) 
     {
-        for (const auto & [receiver_ptr, prob] : sender.get_receiver_preferences().get_preferences()) 
+        for (const auto& [receiver_ptr, prob] : sender.get_receiver_preferences().get_preferences()) 
         {
             os << "LINK src=" << src_tag << "-" << src_id << " dest=";
             os << (receiver_ptr->get_receiver_type() == ReceiverType::WORKER ? "worker-" : "store-");
@@ -312,22 +314,31 @@ namespace NetSim
 
     void save_factory_structure(const Factory &factory, std::ostream &os) 
     {
-        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
-        { os << "LOADING_RAMP id=" << it->get_id() << " delivery-interval=" << it->get_delivery_interval() << "\n"; }
-
-        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); ++it) 
-        {
-            os << "WORKER id=" << it->get_id() << " processing-time=" << it->get_processing_duration() << " queue-type=";
-            os << (it->get_queue()->get_queue_type() == PackageQueueType::LIFO ? "LIFO" : "FIFO") << "\n";
+        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); it++) 
+        { 
+            os << "LOADING_RAMP" << " ";
+            os << "id=" << it->get_id() << " ";
+            os << "delivery-interval=" << it->get_delivery_interval() << "\n"; 
         }
 
-        for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); ++it) 
-        { os << "STOREHOUSE id=" << it->get_id() << "\n"; }
+        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); it++ ) 
+        {
+            os << "WORKER" << " ";
+            os << "id=" << it->get_id() << " ";
+            os << "processing-time=" << it->get_processing_duration() << " "; 
+            os << "queue-type=" << (it->get_queue()->get_queue_type() == PackageQueueType::LIFO ? "LIFO" : "FIFO") << "\n";
+        }
 
-        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
+        for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); it++) 
+        { 
+            os << "STOREHOUSE" << " ";
+            os << "id=" << it->get_id() << "\n"; 
+        }
+
+        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); it++) 
         { save_links(*it, "ramp", it->get_id(), os); }
 
-        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); ++it) 
+        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); it++) 
         { save_links(*it, "worker", it->get_id(), os); }
 
         os.flush();        

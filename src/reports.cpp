@@ -12,8 +12,8 @@ namespace NetSim
         std::vector<ElementID> ramp_ids;
 
         //rownie dobrze mogles zrobic range for jak dla mnie ale ok
-        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); ++it) 
-        { ramp_ids.push_back(it->get_id()); }
+        for (auto it = factory.ramp_cbegin(); it != factory.ramp_cend(); it++) 
+        { ramp_ids.push_back( it->get_id() ); }
 
         std::sort(ramp_ids.begin(), ramp_ids.end());   //sortujemy wedlug id
 
@@ -28,7 +28,7 @@ namespace NetSim
             std::vector<std::pair<std::string, ElementID>> receivers;
 
             //nastepnym razem robimy iteratory kalsie ReceiverPreferences i tyle bo to wygladda strasznei
-            for (const auto& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences()) 
+            for (const auto& [receiver_ptr, prob] : it->get_receiver_preferences().get_preferences() ) 
             {
                 std::string type_str = (receiver_ptr->get_receiver_type() == ReceiverType::WORKER ? "worker" : "storehouse");
 
@@ -44,7 +44,7 @@ namespace NetSim
                 return a.second < b.second;
             });
             
-            for (const auto & [receiver_str, receiver_id] : receivers) 
+            for (const auto& [receiver_str, receiver_id] : receivers) 
             { os << "    " << receiver_str << " #" << receiver_id << "\n"; }
         }
 
@@ -54,7 +54,7 @@ namespace NetSim
 
         std::vector<ElementID> worker_ids;
 
-        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); ++it) 
+        for (auto it = factory.worker_cbegin(); it != factory.worker_cend(); it++) 
         { worker_ids.push_back(it->get_id()); }
 
         std::sort(worker_ids.begin(), worker_ids.end());
@@ -96,7 +96,7 @@ namespace NetSim
 
         std::vector<ElementID> storehouse_ids;
 
-        for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); ++it) 
+        for (auto it = factory.storehouse_cbegin(); it != factory.storehouse_cend(); it++) 
         { storehouse_ids.push_back(it->get_id()); }
 
         std::sort(storehouse_ids.begin(), storehouse_ids.end());

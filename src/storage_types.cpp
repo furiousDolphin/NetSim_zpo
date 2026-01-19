@@ -36,12 +36,14 @@ namespace NetSim
                 container_.pop_front();
                 return p;
             }
+
             case PackageQueueType::LIFO: 
             {
                 Package p = std::move(container_.back());
                 container_.pop_back();
                 return p;
             }
+
             default: 
             { throw std::runtime_error("Unknown queue type."); }
         }
@@ -49,6 +51,7 @@ namespace NetSim
 
     //-----------------------------------------------------------------------------------
 
+    //iteratory
     IPackageStockpile::const_iterator PackageQueue::begin() const 
     { return container_.begin(); }
 

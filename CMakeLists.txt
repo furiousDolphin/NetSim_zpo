@@ -25,4 +25,4 @@ set_target_properties(NetSimApp PROPERTIES LINK_FLAGS "-Wl,--subsystem,console")
 
 
 enable_testing()
-#add_subdirectory(tests)
+add_subdirectory(tests)

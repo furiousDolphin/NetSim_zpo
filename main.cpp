@@ -26,13 +26,10 @@ int main()
         std::cout << "Factory structure loaded successfully." << std::endl;
 
         if (factory.is_consistent()) 
-        {
-            std::cout << "Network is consistent." << std::endl;
-        } 
+        { std::cout << "Network is consistent." << std::endl; } 
+
         else 
-        {
-            std::cerr << "Warning: Network is inconsistent!" << std::endl;
-        }
+        { std::cerr << "Warning: Network is inconsistent!" << std::endl; }
         
         std::cout << "\n--- Initial Factory Structure ---\n" << std::endl;
         NetSim::generate_structure_report(factory, std::cout);
@@ -41,7 +38,7 @@ int main()
 
         std::ofstream output_file("factory_structure_saved.txt");
 
-        if (output_file.is_open()) 
+        if ( output_file.is_open() ) 
         {
             NetSim::save_factory_structure(factory, output_file);
             std::cout << "Structure saved to factory_structure_saved.txt" << std::endl;
@@ -55,11 +52,12 @@ int main()
 
         NetSim::simulate(factory, 5, [&notifier](NetSim::Factory& f, NetSim::Time t) 
         {
-            if (notifier.should_generate_report(t)) 
+            if ( notifier.should_generate_report(t) ) 
             { NetSim::generate_simulation_turn_report(f, std::cout, t); }
         });
 
     } 
+
     catch (const std::exception& e) 
     {
         std::cerr << "Error: " << e.what() << std::endl;
